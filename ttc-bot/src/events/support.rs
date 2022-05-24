@@ -33,7 +33,7 @@ pub async fn thread_update(ctx: &Context, thread: &GuildChannel, data: &Data) {
             }
 
             // If the unarchival limit has been reached archive the thread for good
-            if db_thread.unarchivals >= 3 {
+            if db_thread.unarchivals > 2 {
                 match embed_msg(
                     ctx,
                     &thread.id,

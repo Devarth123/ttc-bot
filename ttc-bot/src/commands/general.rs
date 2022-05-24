@@ -191,9 +191,10 @@ pub async fn harold(
     let start_time = Instant::now();
 
     for (channel_id, _) in channels {
-        let ctx = ctx.discord().clone();
+        let ctx = ctx.discord().clone(); 
+        // let ctx = ctx.discord().clone();
         let progress_message = progress_message.clone();
-        let channel_amount = channel_amount.clone();
+        let channel_amount = channel_amount;
         let channel_progress = channel_progress.clone();
         let handle = tokio::spawn(async move {
             let mut global_messages: (u64, u64) = (0, 0);
@@ -216,7 +217,7 @@ pub async fn harold(
                         };
                         global_messages.0 += 1;
                         user_messages.0 += 1;
-                        if message.content.contains(":helpmeplz:") {
+                        if (message.content.contains(":helpmeplz:")) || (message.content.contains(":killmeplz:")) {
                             global_messages.1 += 1;
                             user_messages.1 += 1;
                         }
