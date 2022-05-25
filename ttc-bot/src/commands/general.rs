@@ -189,14 +189,14 @@ pub async fn harold(
     let channel_amount = channels.len();
 
     let start_time = Instant::now();
-
+    let mut black_harold: u32 = 0;
     for (channel_id, _) in channels {
         let ctx = ctx.discord().clone(); 
         // let ctx = ctx.discord().clone();
         let progress_message = progress_message.clone();
         let channel_amount = channel_amount;
         let channel_progress = channel_progress.clone();
-        let handle = tokio::spawn(async move {
+            let handle = tokio::spawn(async move {
             let mut global_messages: (u64, u64) = (0, 0);
             let mut user_hash_map: HashMap<UserId, (u64, u64)> = HashMap::new();
             let mut messages = channel_id.messages_iter(ctx.clone()).boxed();
@@ -217,10 +217,19 @@ pub async fn harold(
                         };
                         global_messages.0 += 1;
                         user_messages.0 += 1;
-                        if (message.content.contains(":helpmeplz:")) || (message.content.contains(":killmeplz:")) {
-                            global_messages.1 += 1;
-                            user_messages.1 += 1;
+                        if message.content.contains(":helpmeplz:"){
+                            global_messages.1 +=1;
+                            user_messages.1 +=1;
+                            continue; 
+                        }else if message.content.contains(":killmeplz:"){
+                                global_messages.1 +=1;
+                                black_harold +=1;
+                                continue;
                         }
+                       //if (message.content.contains(":helpmeplz:")) || (message.content.contains(":killmeplz:")) {
+                        //     global_messages.1 += 1;
+                        //     user_messages.1 += 1;
+                        // 
                     }
                     Err(why) => log::error!("Something went wrong when getting message: {}", why),
                 }
@@ -315,7 +324,7 @@ pub async fn harold(
         let mut embed = CreateEmbed::default();
         embed.title("Harold counting finished")
             .description(format!(
-                "Total messages: {}\nTotal harold messages: {}\nGlobal harold percentage: {:.2}%\nTime taken: {} minutes and {} seconds",
+                "Total messages: {}\nTotal harold messages: {}\nTotal Black harold message: {black_harold}\nGlobal harold percentage: {:.2}%\nTime taken: {} minutes and {} seconds",
                 global_messages.0,
                 global_messages.1,
                 (global_messages.1 as f64 / global_messages.0 as f64) * 100.0,
